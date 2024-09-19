@@ -36,6 +36,7 @@ const Checkout = () => {
     lastNameValidation,
     emailValidation,
     phoneValidation,
+    totalDays,
   } = useGlobalState();
 
   const { id } = useGlobalSearchParams();
@@ -213,7 +214,9 @@ const Checkout = () => {
           <View style={styles.activityScheduleWrapper}>
             <View style={styles.activityScheduleHeader}>
               <Text>Check in & Check out dates</Text>
-              <Text>(14 days)</Text>
+              <Text>
+                ({totalDays} {totalDays === 1 ? "day" : "days"})
+              </Text>
             </View>
             <View style={styles.bookingStatusWrapper}>
               <View style={styles.activityScheduleNameWrapper}>

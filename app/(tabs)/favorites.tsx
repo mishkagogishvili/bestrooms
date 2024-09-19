@@ -25,6 +25,7 @@ const favorites = () => {
     updateRating,
     userRating,
     setUserRating,
+    changeCurrency,
   } = useGlobalState();
   const [notificationVisible, setNotificationVisible] = useState(false);
   const router = useRouter();
@@ -141,7 +142,11 @@ const favorites = () => {
                         {/* )} */}
                         <View style={styles.priceNightWrapper}>
                           {/* <Text style={styles.price}>${item.price}</Text> */}
-                          <Text style={styles.price}>$555</Text>
+                          <Text style={styles.price}>
+                            {" "}
+                            {changeCurrency === "usd" ? "$" : "₾"}
+                            {item.min_price}
+                          </Text>
                           <Text style={styles.night}> / night</Text>
                         </View>
                       </View>

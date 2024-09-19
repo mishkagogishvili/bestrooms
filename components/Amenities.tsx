@@ -5,7 +5,7 @@ import { useGlobalState } from "./context/GlobalStateProvider";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 
-const Amenities = () => {
+const Amenities = ({ Api }) => {
   const { hotelInfo } = useGlobalState();
   const [showAll, setShowAll] = useState(false); // state to track visibility
 
@@ -103,8 +103,8 @@ const Amenities = () => {
   const handleShowAllToggle = () => setShowAll((prev) => !prev);
 
   const displayedAmenities = showAll
-    ? hotelInfo.amenities
-    : hotelInfo.amenities.slice(0, 5); // Show only the first 5 if `showAll` is false
+    ? Api.amenities
+    : Api.amenities.slice(0, 5);
 
   return (
     <>
@@ -123,7 +123,7 @@ const Amenities = () => {
           </View>
         ) : null;
       })}
-      {hotelInfo.amenities.length > 5 && (
+      {Api.amenities.length > 5 && (
         <TouchableOpacity
           activeOpacity={1}
           style={styles.amenitiesBtn}
@@ -132,7 +132,7 @@ const Amenities = () => {
           <Text style={styles.amenitiesBtnText}>
             {showAll
               ? "Hide Amenities"
-              : `View all Amenities (${hotelInfo.amenities.length})`}
+              : `View all Amenities (${Api.amenities.length})`}
           </Text>
         </TouchableOpacity>
       )}
