@@ -19,6 +19,8 @@ import ChangeCurrencyDrawer from "./ChangeCurrencyDrawer";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Amenities from "@/components/Amenities";
+import RoomAmenities from "../../components/RoomAmenities";
 
 const RoomPage = () => {
   const {
@@ -38,6 +40,8 @@ const RoomPage = () => {
     hotelInfo,
     language,
     changeCurrency,
+    search,
+    totalDays,
   } = useGlobalState();
 
   const [selectedIndex, setSelectedIndex] = useState<number>(2);
@@ -80,36 +84,36 @@ const RoomPage = () => {
           <TouchableOpacity activeOpacity={1} onPress={closeChange}>
             <View>
               {hotelRoom.images && hotelRoom.images.length > 0 && (
-                <View>
-                  <View style={{ marginTop: 30 }}>
-                    <View>
-                      <Carousel
-                        style={styles.wrapper}
-                        selectedIndex={selectedIndex}
-                        autoplay
-                        infinite
-                        afterChange={onHorizontalSelectedIndexChange}
-                        ref={carouselRef}
-                      >
-                        {hotelRoom.images.map((images) => {
-                          return (
-                            <View
-                              style={[
-                                styles.containerHorizontal,
-                                { backgroundColor: "red" },
-                              ]}
-                            >
-                              <Image
-                                style={styles.cardImage}
-                                source={{ uri: images.url }}
-                              />
-                            </View>
-                          );
-                        })}
-                      </Carousel>
-                    </View>
-                  </View>
-                </View>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => navigateToRoomImages(hotelRoom)}
+                  style={{ marginTop: 30 }}
+                >
+                  <Carousel
+                    style={styles.wrapper}
+                    selectedIndex={selectedIndex}
+                    autoplay
+                    infinite
+                    afterChange={onHorizontalSelectedIndexChange}
+                    ref={carouselRef}
+                  >
+                    {hotelRoom.images.map((images) => {
+                      return (
+                        <View
+                          style={[
+                            styles.containerHorizontal,
+                            { backgroundColor: "red" },
+                          ]}
+                        >
+                          <Image
+                            style={styles.cardImage}
+                            source={{ uri: images.url }}
+                          />
+                        </View>
+                      );
+                    })}
+                  </Carousel>
+                </TouchableOpacity>
               )}
               <View style={styles.hotelPageHeaderWrapper}>
                 <TouchableOpacity
@@ -177,19 +181,6 @@ const RoomPage = () => {
                   </View>
                 </View>
               </View>
-              <TouchableOpacity
-                onPress={() => navigateToRoomImages(hotelRoom)}
-                activeOpacity={1}
-                style={styles.pictureCount}
-              >
-                <AntDesign name="picture" size={24} color="white" />
-                <Text style={styles.pictureCountText}>
-                  1/
-                  {hotelRoom.translations && hotelRoom.translations.length > 0
-                    ? hotelRoom.images.length
-                    : "loading..."}
-                </Text>
-              </TouchableOpacity>
             </View>
             <View style={styles.roomDetailsWrapper}>
               <Text style={styles.roomName}>
@@ -198,8 +189,10 @@ const RoomPage = () => {
                   : "loading..."}
               </Text>
               <View style={styles.dates}>
-                <Text style={{ color: "#9D9D9D" }}>22 may - 30 june</Text>
-                <Text style={{ color: "#9D9D9D" }}>12 nights</Text>
+                <Text style={{ color: "#9D9D9D" }}>
+                  {search[0].check_in} - {search[0].check_out}
+                </Text>
+                <Text style={{ color: "#9D9D9D" }}>{totalDays} nights</Text>
               </View>
               <View style={styles.dates}>
                 <View style={{ flexDirection: "row", marginTop: 10 }}>
@@ -223,27 +216,7 @@ const RoomPage = () => {
               </Text>
               <View style={styles.horizontalLine}></View>
               <View>
-                <View style={styles.amenitiesHeader}>
-                  <Text style={styles.text}>Property Amenities</Text>
-                  <Text style={styles.text}>(free access)</Text>
-                </View>
-                <View style={styles.amenitiesWrapper}>
-                  <AntDesign name="wifi" size={24} color="black" />
-                  <Text style={styles.amenitiesText}>Free high speed Wifi</Text>
-                </View>
-                <View style={styles.amenitiesCycle}>
-                  <FontAwesome5 name="wine-glass-alt" size={24} color="black" />
-                  <Text style={styles.amenitiesText}>24 Hour Bar</Text>
-                </View>
-                <View style={styles.amenitiesWrapper}>
-                  <FontAwesome5 name="bicycle" size={24} color="black" />
-                  <Text style={styles.amenitiesText}>Gym Area</Text>
-                </View>
-                <TouchableOpacity activeOpacity={1} style={styles.amenitiesBtn}>
-                  <Text style={styles.amenitiesBtnText}>
-                    View all Amenities (35)
-                  </Text>
-                </TouchableOpacity>
+                <RoomAmenities state={false} />
               </View>
               {/* ოთახის რევიუები */}
               {/* <View style={styles.horizontalLine}></View>

@@ -12,7 +12,10 @@ import {
 import { Progress, Button, Carousel } from "@ant-design/react-native";
 import { useGlobalState } from "@/components/context/GlobalStateProvider";
 import { useGlobalSearchParams, useNavigation, useRouter } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import StarRating from "../ui/StarRating";
+import LanguageSelectorDrawer from "./LanguageSelectorDrawer";
+import ChangeCurrencyDrawer from "./ChangeCurrencyDrawer";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -20,7 +23,8 @@ import CountryFlag from "react-native-country-flag";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MapView, { Marker } from "react-native-maps";
 import Amenities from "../../components/Amenities";
-
+import Activities from "./Activities";
+import RoomAmenities from "@/components/RoomAmenities";
 const HotelPage = () => {
   const [selectedIndex, setSelectedIndex] = useState<number>(2);
   const carouselRef = useRef<Carousel | null>(null);
@@ -48,7 +52,14 @@ const HotelPage = () => {
     setregion,
     ServiceId,
     setServiceId,
-
+    toggleChange,
+    showChangeContent,
+    showChange,
+    showChangeContentFunction,
+    handleOpenCurrencyDrawer,
+    handleOpenLanguageDrawer,
+    openDrawerCurrency,
+    openDrawerLanguage,
     changeCurrency,
   } = useGlobalState();
 
@@ -72,10 +83,6 @@ const HotelPage = () => {
     navigation.goBack();
   };
 
-  const navigateToActivities = (service) => {
-    router.push(`/ui/activitiesDetails/?id=${service.id}`);
-    setServiceId(service.id);
-  };
   const navigateToHotelImages = (item) => {
     router.push(`/ui/HotelImages/?id=${item.id}`);
   };
@@ -96,151 +103,204 @@ const HotelPage = () => {
 
   return (
     <>
-      <ScrollView>
-        <View style={styles.marginBottom}>
-          <View>
+      <GestureHandlerRootView>
+        <ScrollView>
+          <View style={styles.marginBottom}>
             <View>
-              <View style={{ marginTop: 30 }}>
-                <View>
-                  <Carousel
-                    style={styles.wrapper}
-                    selectedIndex={selectedIndex}
-                    autoplay
-                    infinite
-                    afterChange={onHorizontalSelectedIndexChange}
-                    ref={carouselRef}
+              <View>
+                <View style={{ marginTop: 30 }}>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => navigateToHotelImages(hotelInfo)}
                   >
-                    {hotelInfo.images.map((images) => {
-                      return (
-                        <View
-                          style={[
-                            styles.containerHorizontal,
-                            { backgroundColor: "red" },
-                          ]}
-                        >
-                          <Image
-                            style={styles.cardImage}
-                            source={{ uri: images.url }}
-                          />
-                        </View>
-                      );
-                    })}
-                  </Carousel>
+                    <Carousel
+                      style={styles.wrapper}
+                      selectedIndex={selectedIndex}
+                      autoplay
+                      infinite
+                      afterChange={onHorizontalSelectedIndexChange}
+                      ref={carouselRef}
+                    >
+                      {hotelInfo.images.map((images) => {
+                        return (
+                          <View
+                            style={[
+                              styles.containerHorizontal,
+                              { backgroundColor: "red" },
+                            ]}
+                          >
+                            <Image
+                              style={styles.cardImage}
+                              source={{ uri: images.url }}
+                            />
+                          </View>
+                        );
+                      })}
+                    </Carousel>
+                  </TouchableOpacity>
                 </View>
               </View>
-            </View>
-            <View style={styles.hotelPageHeaderWrapper}>
-              <TouchableOpacity
-                onPress={handleBackPress}
-                style={styles.headerBtnWrapper}
-                activeOpacity={1}
-              >
-                <AntDesign name="arrowleft" size={24} color="black" />
-              </TouchableOpacity>
-              <View style={styles.hotelPageHeaderRightSection}>
+              <View style={styles.hotelPageHeaderWrapper}>
                 <TouchableOpacity
+                  onPress={handleBackPress}
+                  style={styles.headerBtnWrapper}
                   activeOpacity={1}
-                  // style={
-                  //   hotelInfo.isFavorite
-                  //     ? styles.cardHeart
-                  //     : styles.cardHeartUnselected
-                  // }
-                  style={styles.cardHeart}
-                  onPress={() => {
-                    toggleFavorite(hotelInfo.id);
-                  }}
                 >
-                  <AntDesign
-                    style={styles.heartIcon}
-                    name="heart"
-                    size={24}
-                    color="#FF0000"
-                  />
+                  <AntDesign name="arrowleft" size={24} color="black" />
+                </TouchableOpacity>
+                <View style={styles.hotelPageHeaderRightSection}>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    // style={
+                    //   hotelInfo.isFavorite
+                    //     ? styles.cardHeart
+                    //     : styles.cardHeartUnselected
+                    // }
+                    style={styles.cardHeart}
+                    onPress={() => {
+                      toggleFavorite(hotelInfo.id);
+                    }}
+                  >
+                    <AntDesign
+                      style={styles.heartIcon}
+                      name="heart"
+                      size={24}
+                      color="#FF0000"
+                    />
 
-                  {/* {hotelInfo.isFavorite ? (
+                    {/* {hotelInfo.isFavorite ? (
                   <AntDesign tyle={styles.heartIcon} name="heart" size={24}  color="#FF0000"/>
                   ) : (
                   <AntDesign   style={styles.heartIconUnselected} name="hearto" size={24} color="white"" />
                   )} */}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.headerBtnWrapper}
+                    activeOpacity={1}
+                    onPress={toggleChange}
+                  >
+                    <Entypo
+                      name="dots-three-vertical"
+                      size={24}
+                      color="black"
+                    />
+                  </TouchableOpacity>
+                  <View
+                    style={[
+                      styles.roomPageChangeWrapper,
+                      !showChange && { display: "none" },
+                    ]}
+                  >
+                    <TouchableOpacity
+                      style={[
+                        styles.roomPageChangeLanguage,
+                        showChangeContent === 1 && {
+                          backgroundColor: "#f5f5f5",
+                        },
+                      ]}
+                      activeOpacity={1}
+                      onPress={() => (
+                        showChangeContentFunction(1), handleOpenLanguageDrawer()
+                      )}
+                    >
+                      <Text
+                        style={{
+                          textAlign: "center",
+                          paddingTop: 12,
+                        }}
+                      >
+                        Change language
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.roomPageChangeLanguage,
+                        showChangeContent === 2 && {
+                          backgroundColor: "#f5f5f5",
+                        },
+                      ]}
+                      activeOpacity={1}
+                      onPress={() => (
+                        showChangeContentFunction(2), handleOpenCurrencyDrawer()
+                      )}
+                    >
+                      <Text style={{ textAlign: "center", paddingTop: 12 }}>
+                        Change currency
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={styles.container}>
+              <Text style={styles.hotelName}>
+                {hotelInfo.translations[0].title}
+              </Text>
+              <View style={styles.cardContentFirstSection}>
+                <View style={styles.singleStarWrapper}>
+                  <FontAwesome5
+                    name="star-half-alt"
+                    size={24}
+                    color="#FFD363"
+                  />
+                  <Text style={styles.rating}>{hotelInfo.star_rating}</Text>
+                  {/* <Text style={styles.review}>({hotelInfo.reviews} reviews)</Text> */}
+                  <Text style={styles.review}>(0 reviews)</Text>
+                </View>
+                <TouchableOpacity activeOpacity={1}>
+                  <StarRating
+                    defaultRating={hotelInfo.star_rating}
+                    onSetRating={setUserRating}
+                  />
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.headerBtnWrapper}
-                  activeOpacity={1}
-                >
-                  <Entypo name="dots-three-vertical" size={24} color="black" />
-                </TouchableOpacity>
               </View>
-            </View>
-            <TouchableOpacity
-              onPress={() => navigateToHotelImages(hotelInfo)}
-              activeOpacity={1}
-              style={styles.pictureCount}
-            >
-              <AntDesign name="picture" size={24} color="white" />
-              <Text style={styles.pictureCountText}>1/15</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.container}>
-            <Text style={styles.hotelName}>
-              {hotelInfo.translations[0].title}
-            </Text>
-            <View style={styles.cardContentFirstSection}>
-              <View style={styles.singleStarWrapper}>
-                <FontAwesome5 name="star-half-alt" size={24} color="#FFD363" />
-                <Text style={styles.rating}>{hotelInfo.star_rating}</Text>
-                {/* <Text style={styles.review}>({hotelInfo.reviews} reviews)</Text> */}
-                <Text style={styles.review}>(0 reviews)</Text>
-              </View>
-              <TouchableOpacity activeOpacity={1}>
-                <StarRating
-                  defaultRating={hotelInfo.star_rating}
-                  onSetRating={setUserRating}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.cardContentSecondSection}>
-              <Text
-                style={styles.SecondSectionText}
-              >{`${hotelInfo.city},  ${hotelInfo.region} Region`}</Text>
-              <View style={styles.priceNightWrapper}>
-                {/* <Text style={styles.price}>${hotelInfo.price}</Text> */}
-                <Text style={styles.price}>$555</Text>
-                <Text style={styles.night}> / night</Text>
-              </View>
-            </View>
-            <Text style={styles.description}>
-              {hotelInfo.translations[0].description}
-            </Text>
-            <View style={styles.horizontalLine}></View>
-            <View>
-              <Text style={styles.text}>Check in & Check out dates</Text>
-              <View style={styles.flex}>
-                <AntDesign name="calendar" size={24} color="black" />
-                <Text style={styles.checkInDateText}>
-                  {search[0].check_in} - {search[0].check_out}
+              <View style={styles.cardContentSecondSection}>
+                <Text style={styles.SecondSectionText}>
+                  {hotelInfo.city} {hotelInfo.region}
                 </Text>
-              </View>
-            </View>
-            <View style={styles.horizontalLine}></View>
-            <View>
-              <Text style={styles.text}>Check in & Check Times</Text>
-              <View style={styles.checkInTime}>
-                <View style={styles.flex}>
-                  <AntDesign name="clockcircleo" size={24} color="black" />
-                  <Text style={styles.checkInTimeText}>Check in from:</Text>
+                <View style={styles.priceNightWrapper}>
+                  {/* <Text style={styles.price}>${hotelInfo.price}</Text> */}
+                  <Text style={styles.price}>$555</Text>
+                  <Text style={styles.night}> / night</Text>
                 </View>
-                <Text style={{ marginTop: 13 }}>{hotelInfo.checkin_time}</Text>
               </View>
-              <View style={styles.checkInTime}>
+              <Text style={styles.description}>
+                {hotelInfo.translations[0].description}
+              </Text>
+              <View style={styles.horizontalLine}></View>
+              <View>
+                <Text style={styles.text}>Check in & Check out dates</Text>
                 <View style={styles.flex}>
-                  <AntDesign name="clockcircleo" size={24} color="black" />
-                  <Text style={styles.checkInTimeText}>Check out from:</Text>
+                  <AntDesign name="calendar" size={24} color="black" />
+                  <Text style={styles.checkInDateText}>
+                    {search[0].check_in} - {search[0].check_out}
+                  </Text>
                 </View>
-                <Text style={{ marginTop: 13 }}>{hotelInfo.checkout_time}</Text>
               </View>
-            </View>
-            {/* ენები */}
-            {/* <View style={styles.horizontalLine}></View>
+              <View style={styles.horizontalLine}></View>
+              <View>
+                <Text style={styles.text}>Check in & Check Times</Text>
+                <View style={styles.checkInTime}>
+                  <View style={styles.flex}>
+                    <AntDesign name="clockcircleo" size={24} color="black" />
+                    <Text style={styles.checkInTimeText}>Check in from:</Text>
+                  </View>
+                  <Text style={{ marginTop: 13 }}>
+                    {hotelInfo.checkin_time}
+                  </Text>
+                </View>
+                <View style={styles.checkInTime}>
+                  <View style={styles.flex}>
+                    <AntDesign name="clockcircleo" size={24} color="black" />
+                    <Text style={styles.checkInTimeText}>Check out from:</Text>
+                  </View>
+                  <Text style={{ marginTop: 13 }}>
+                    {hotelInfo.checkout_time}
+                  </Text>
+                </View>
+              </View>
+              {/* ენები */}
+              {/* <View style={styles.horizontalLine}></View>
             <View>
               <Text style={styles.text}>Available languages</Text>
               <View style={styles.languagesWrapper}>
@@ -258,58 +318,26 @@ const HotelPage = () => {
                 </View>
               </View>
             </View> */}
-            <View style={styles.horizontalLine}></View>
-            <View>
-              <Amenities />
-            </View>
-            <View style={styles.horizontalLine}></View>
-            <View>
-              <View style={styles.amenitiesHeader}>
-                <Text style={styles.text}>Activities and Services</Text>
-                <Text style={styles.text}>(Premium)</Text>
+              <View style={styles.horizontalLine}></View>
+              <View>
+                <Amenities Api={hotelInfo} />
               </View>
-              {hotelInfo.premium_services.map((service) => {
-                return (
-                  <View style={styles.activitiesWrapper}>
-                    <View style={styles.flex}>
-                      <Image
-                        style={styles.activitiesImage}
-                        source={{ uri: service.images[0].url }}
-                      />
-                      <Text style={styles.activitiesText}>
-                        {service.translations[0].title}
-                      </Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => navigateToActivities(hotelInfo)}
-                      style={styles.activitiesDetails}
-                      activeOpacity={1}
-                    >
-                      <Text>Details</Text>
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
+              <View style={styles.horizontalLine}></View>
+              {hotelInfo.premium_services.length > 0 && <Activities />}
 
-              <TouchableOpacity activeOpacity={1} style={styles.amenitiesBtn}>
-                <Text style={styles.amenitiesBtnText}>
-                  All activities and services (12)
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.horizontalLine}></View>
-            <View>
-              <MapView region={mapCoordinates} style={styles.map}>
-                <Marker
-                  coordinate={{
-                    latitude: parseFloat(hotelInfo.latitude),
-                    longitude: parseFloat(hotelInfo.longitude),
-                  }}
-                />
-              </MapView>
-            </View>
-            {/* შეფასებები */}
-            {/* <View style={styles.horizontalLine}></View>
+              <View style={styles.horizontalLine}></View>
+              <View>
+                <MapView region={mapCoordinates} style={styles.map}>
+                  <Marker
+                    coordinate={{
+                      latitude: parseFloat(hotelInfo.latitude),
+                      longitude: parseFloat(hotelInfo.longitude),
+                    }}
+                  />
+                </MapView>
+              </View>
+              {/* შეფასებები */}
+              {/* <View style={styles.horizontalLine}></View>
             <View>
               <View style={styles.flex}>
                 <View style={styles.singleStarWrapper}>
@@ -530,91 +558,97 @@ const HotelPage = () => {
                 </Text>
               </TouchableOpacity>
             </View> */}
-            <View style={styles.horizontalLine}></View>
-            <View style={{ marginTop: 25 }}>
-              <View style={{ flexDirection: "row" }}>
-                {/* <Image
+              <View style={styles.horizontalLine}></View>
+              <View style={{ marginTop: 25 }}>
+                <View style={{ flexDirection: "row" }}>
+                  {/* <Image
                   source={require("../../assets/images/profilePicture.png")}
                 /> */}
-                <Text style={styles.authorDetails}>Hosted By jolyne kujoh</Text>
-              </View>
-              <View style={styles.authordetailes}>
-                <Text style={{ fontWeight: "500" }}>{hotelInfo.phone}</Text>
-                <TouchableOpacity style={{ flexDirection: "row" }}>
-                  <AntDesign name="copy1" size={20} color="#9d9d9d" />
-                  <Text style={{ marginLeft: 10, fontWeight: "500" }}>
-                    copy
+                  <Text style={styles.authorDetails}>
+                    Hosted By jolyne kujoh
                   </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.authordetailes}>
-                <Text style={{ fontWeight: "500" }}>{hotelInfo.email}</Text>
-                <TouchableOpacity style={{ flexDirection: "row" }}>
-                  <AntDesign name="copy1" size={20} color="#9d9d9d" />
-                  <Text style={{ marginLeft: 10, fontWeight: "500" }}>
-                    copy
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.horizontalLine}></View>
-            <TouchableOpacity
-              activeOpacity={1}
-              onPress={() => navigateToRooms(hotelInfo)}
-            >
-              <Text style={styles.text}>Available rooms</Text>
-              {hotelRooms.map((room) => {
-                return (
-                  <View key={room.id} style={{ marginHorizontal: "auto" }}>
-                    <Image
-                      style={styles.roomImage}
-                      source={{ uri: room.images[0]?.url }}
-                    />
-                    <Text style={styles.text}>
-                      {room.translations[0].title}
+                </View>
+                <View style={styles.authordetailes}>
+                  <Text style={{ fontWeight: "500" }}>{hotelInfo.phone}</Text>
+                  <TouchableOpacity style={{ flexDirection: "row" }}>
+                    <AntDesign name="copy1" size={20} color="#9d9d9d" />
+                    <Text style={{ marginLeft: 10, fontWeight: "500" }}>
+                      copy
                     </Text>
-                    <View style={{ flexDirection: "row" }}>
-                      <View style={styles.roomAmenetie}>
-                        <AntDesign name="wifi" size={24} color="black" />
-                        <Text style={{ marginTop: 2 }}>Wifi</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.authordetailes}>
+                  <Text style={{ fontWeight: "500" }}>{hotelInfo.email}</Text>
+                  <TouchableOpacity style={{ flexDirection: "row" }}>
+                    <AntDesign name="copy1" size={20} color="#9d9d9d" />
+                    <Text style={{ marginLeft: 10, fontWeight: "500" }}>
+                      copy
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.horizontalLine}></View>
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => navigateToRooms(hotelInfo)}
+              >
+                <Text style={styles.text}>Available rooms</Text>
+                {hotelRooms.map((room) => {
+                  return (
+                    <View key={room.id} style={{ marginHorizontal: "auto" }}>
+                      <Image
+                        style={styles.roomImage}
+                        source={{ uri: room.images[0]?.url }}
+                      />
+                      <Text style={styles.text}>
+                        {room.translations[0].title}
+                      </Text>
+                      <View style={{ flexDirection: "row" }}>
+                        <RoomAmenities state={true} />
                       </View>
-                      <View style={styles.roomAmenetie}>
-                        <FontAwesome5 name="bed" size={24} color="black" />
-                        <Text style={{ marginTop: 2 }}>1 king size bed</Text>
-                      </View>
-                    </View>
-                    <View style={styles.cardContentSecondSection}>
-                      {/* item cacelation პროპი უნდა */}
-                      <View style={styles.freeCancelation}>
-                        <View style={styles.freeCancelationView}>
-                          <AntDesign name="check" size={20} color="#208e17" />
+                      <View style={styles.cardContentSecondSection}>
+                        {/* item cacelation პროპი უნდა */}
+                        <View style={styles.freeCancelation}>
+                          <View style={styles.freeCancelationView}>
+                            <AntDesign name="check" size={20} color="#208e17" />
+                          </View>
+                          <Text style={styles.freeCancelationText}>
+                            Free Cancelation
+                          </Text>
                         </View>
-                        <Text style={styles.freeCancelationText}>
-                          Free Cancelation
-                        </Text>
+                        <View style={styles.priceNightWrapper}>
+                          <Text style={styles.price}>
+                            {changeCurrency === "usd" ? "$" : "₾"}
+                            {room.price}
+                          </Text>
+                          <Text style={styles.night}> / night</Text>
+                        </View>
                       </View>
-                      <View style={styles.priceNightWrapper}>
-                        <Text style={styles.price}>
-                          {changeCurrency === "usd" ? "$" : "₾"}
-                          {room.price}
-                        </Text>
-                        <Text style={styles.night}> / night</Text>
-                      </View>
+                      <TouchableOpacity
+                        onPress={() => navigateToRoom(hotelInfo.id, room.id)}
+                        activeOpacity={1}
+                        style={styles.amenitiesBtn}
+                      >
+                        <Text style={styles.amenitiesBtnText}>See details</Text>
+                      </TouchableOpacity>
                     </View>
-                    <TouchableOpacity
-                      onPress={() => navigateToRoom(hotelInfo.id, room.id)}
-                      activeOpacity={1}
-                      style={styles.amenitiesBtn}
-                    >
-                      <Text style={styles.amenitiesBtnText}>See details</Text>
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
-            </TouchableOpacity>
+                  );
+                })}
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+        <ChangeCurrencyDrawer
+          onOpen={(openFunction) => {
+            openDrawerCurrency.current = openFunction;
+          }}
+        />
+        <LanguageSelectorDrawer
+          onOpen={(openFunction) => {
+            openDrawerLanguage.current = openFunction;
+          }}
+        />
+      </GestureHandlerRootView>
       <View style={styles.showBtnWrapper}>
         <TouchableOpacity
           activeOpacity={1}
@@ -688,6 +722,19 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 12,
     justifyContent: "center",
+  },
+  roomPageChangeWrapper: {
+    position: "absolute",
+    width: 168,
+    height: 96,
+    backgroundColor: "white",
+    top: 50,
+    right: 14,
+    zIndex: 10,
+    borderRadius: 5,
+  },
+  roomPageChangeLanguage: {
+    height: 48,
   },
   cardHeart: {
     height: 48,
@@ -827,53 +874,7 @@ const styles = StyleSheet.create({
   languagesText: {
     paddingBottom: 5,
   },
-  amenitiesHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-  amenitiesWrapper: {
-    flexDirection: "row",
-    margin: 10,
-  },
-  amenitiesText: {
-    marginTop: 2,
-    marginLeft: 10,
-  },
 
-  amenitiesBtn: {
-    marginVertical: 10,
-    height: 48,
-    alignItems: "center",
-    paddingTop: 12,
-    borderWidth: 1,
-    borderColor: "#EDEDED",
-  },
-  amenitiesBtnText: {
-    fontWeight: "500",
-    color: "#434343",
-  },
-  activitiesWrapper: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 10,
-  },
-  activitiesText: {
-    width: 185,
-    marginLeft: 15,
-
-    fontWeight: "500",
-    color: "#434343",
-  },
-  activitiesDetails: {
-    marginTop: 20,
-  },
-  activitiesImage: {
-    width: 60,
-    height: 60,
-
-    borderRadius: 4,
-  },
   map: {
     width: 328,
     height: 272,
@@ -936,17 +937,7 @@ const styles = StyleSheet.create({
     height: 196,
     resizeMode: "cover",
   },
-  roomAmenetie: {
-    flexDirection: "row",
-    borderWidth: 1,
-    borderColor: "#9d9d9d",
-    borderRadius: 4,
-    paddingHorizontal: 7,
-    paddingVertical: 5,
-    marginRight: 10,
-    alignSelf: "flex-start",
-    justifyContent: "space-between",
-  },
+
   freeCancelation: {
     flexDirection: "row",
     color: "#208e17",
@@ -1010,5 +1001,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#212628",
     alignItems: "center",
     paddingHorizontal: 15,
+  },
+  amenitiesBtn: {
+    marginVertical: 10,
+    height: 48,
+    alignItems: "center",
+    paddingTop: 12,
+    borderWidth: 1,
+    borderColor: "#EDEDED",
+  },
+  amenitiesBtnText: {
+    fontWeight: "500",
+    color: "#434343",
   },
 });

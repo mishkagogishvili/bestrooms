@@ -445,6 +445,21 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
   const formattedToday = formatDate(today);
   const formattedTomorrow = formatDate(tomorrow);
 
+  const getTotalDaysCount = () => {
+    if (!startDate || !endDate) return 1;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const diffInMs = end - start;
+
+    const totalDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+
+    return totalDays;
+  };
+
+  const totalDays = getTotalDaysCount();
+
   // Recommended სთეითი
   const [recommendedVisible, setRecommendedVisible] = useState(false);
   const [backAlertVisible, setBackAlertVisible] = useState(false);
@@ -601,6 +616,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
         handleCloseCalendarDrawer,
         formattedToday,
         formattedTomorrow,
+        totalDays,
         markedDates,
         handleDayPress,
         startDate,
