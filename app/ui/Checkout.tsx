@@ -159,6 +159,8 @@ const Checkout = () => {
               />
 
               <TextInput
+                keyboardType="numeric"
+                maxLength={9}
                 style={styles.input}
                 placeholder="Enter your phone number"
                 value={checkout.mobile}

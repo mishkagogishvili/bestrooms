@@ -13,13 +13,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.roxer800.eHotel",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app requires access to your location to provide country code information."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
     },
     "web": {
       "bundler": "metro",
@@ -29,6 +34,11 @@
     "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "088cd196-ed81-4455-a14b-d2597ca9690d"
+      }
     }
   }
 }
