@@ -19,12 +19,15 @@ import ChangeCurrencyDrawer from "./ChangeCurrencyDrawer";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
-import CountryFlag from "react-native-country-flag";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MapView, { Marker } from "react-native-maps";
 import Amenities from "../../components/Amenities";
 import Activities from "./Activities";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import Fontisto from "@expo/vector-icons/Fontisto";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import RoomAmenities from "@/components/RoomAmenities";
+
 const HotelPage = () => {
   const [selectedIndex, setSelectedIndex] = useState<number>(2);
   const carouselRef = useRef<Carousel | null>(null);
@@ -38,6 +41,7 @@ const HotelPage = () => {
   const percent3 = 4;
   const percent2 = 0;
   const percent1 = 0;
+
   const {
     hotelList,
     hotelRooms,
@@ -121,21 +125,25 @@ const HotelPage = () => {
                       afterChange={onHorizontalSelectedIndexChange}
                       ref={carouselRef}
                     >
-                      {hotelInfo.images.map((images) => {
-                        return (
-                          <View
-                            style={[
-                              styles.containerHorizontal,
-                              { backgroundColor: "red" },
-                            ]}
-                          >
-                            <Image
-                              style={styles.cardImage}
-                              source={{ uri: images.url }}
-                            />
-                          </View>
-                        );
-                      })}
+                      {hotelInfo && hotelInfo.images ? (
+                        hotelInfo.images.map((images) => {
+                          return (
+                            <View
+                              style={[
+                                styles.containerHorizontal,
+                                { backgroundColor: "red" },
+                              ]}
+                            >
+                              <Image
+                                style={styles.cardImage}
+                                source={{ uri: images.url }}
+                              />
+                            </View>
+                          );
+                        })
+                      ) : (
+                        <Text>Loading...</Text>
+                      )}
                     </Carousel>
                   </TouchableOpacity>
                 </View>
@@ -593,47 +601,59 @@ const HotelPage = () => {
                 onPress={() => navigateToRooms(hotelInfo)}
               >
                 <Text style={styles.text}>Available rooms</Text>
-                {hotelRooms.map((room) => {
-                  return (
-                    <View key={room.id} style={{ marginHorizontal: "auto" }}>
-                      <Image
-                        style={styles.roomImage}
-                        source={{ uri: room.images[0]?.url }}
-                      />
-                      <Text style={styles.text}>
-                        {room.translations[0].title}
-                      </Text>
-                      <View style={{ flexDirection: "row" }}>
-                        <RoomAmenities state={true} />
-                      </View>
-                      <View style={styles.cardContentSecondSection}>
-                        {/* item cacelation პროპი უნდა */}
-                        <View style={styles.freeCancelation}>
-                          <View style={styles.freeCancelationView}>
-                            <AntDesign name="check" size={20} color="#208e17" />
+                {hotelInfo && hotelInfo.rooms ? (
+                  hotelInfo.rooms.map((room) => {
+                    return (
+                      <View key={room.id} style={{ marginHorizontal: "auto" }}>
+                        <Image
+                          style={styles.roomImage}
+                          source={{ uri: room.images[0]?.url }}
+                        />
+                        <Text style={styles.text}>
+                          {room.translations[0].title}
+                        </Text>
+                        <View style={{ flexDirection: "row" }}>
+                          {room.amenities ? (
+                            <RoomAmenities state={true} data={room.amenities} />
+                          ) : null}
+                        </View>
+                        <View style={styles.cardContentSecondSection}>
+                          {/* item cacelation პროპი უნდა */}
+                          <View style={styles.freeCancelation}>
+                            <View style={styles.freeCancelationView}>
+                              <AntDesign
+                                name="check"
+                                size={20}
+                                color="#208e17"
+                              />
+                            </View>
+                            <Text style={styles.freeCancelationText}>
+                              Free Cancelation
+                            </Text>
                           </View>
-                          <Text style={styles.freeCancelationText}>
-                            Free Cancelation
-                          </Text>
+                          <View style={styles.priceNightWrapper}>
+                            <Text style={styles.price}>
+                              {changeCurrency === "usd" ? "$" : "₾"}
+                              {room.price}
+                            </Text>
+                            <Text style={styles.night}> / night</Text>
+                          </View>
                         </View>
-                        <View style={styles.priceNightWrapper}>
-                          <Text style={styles.price}>
-                            {changeCurrency === "usd" ? "$" : "₾"}
-                            {room.price}
+                        <TouchableOpacity
+                          onPress={() => navigateToRoom(hotelInfo.id, room.id)}
+                          activeOpacity={1}
+                          style={styles.amenitiesBtn}
+                        >
+                          <Text style={styles.amenitiesBtnText}>
+                            See details
                           </Text>
-                          <Text style={styles.night}> / night</Text>
-                        </View>
+                        </TouchableOpacity>
                       </View>
-                      <TouchableOpacity
-                        onPress={() => navigateToRoom(hotelInfo.id, room.id)}
-                        activeOpacity={1}
-                        style={styles.amenitiesBtn}
-                      >
-                        <Text style={styles.amenitiesBtnText}>See details</Text>
-                      </TouchableOpacity>
-                    </View>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <Text>Loading...</Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
@@ -1013,5 +1033,16 @@ const styles = StyleSheet.create({
   amenitiesBtnText: {
     fontWeight: "500",
     color: "#434343",
+  },
+  roomAmenitie: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "#9d9d9d",
+    borderRadius: 4,
+    paddingHorizontal: 7,
+    paddingVertical: 5,
+    marginRight: 10,
+    alignSelf: "flex-start",
+    justifyContent: "space-between",
   },
 });
