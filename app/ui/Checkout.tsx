@@ -14,6 +14,7 @@ import { useGlobalState } from "@/components/context/GlobalStateProvider";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import AuthorDetailes from "@/components/hotelPageComponents/AuthorDetailes";
 
 const Checkout = () => {
   const {
@@ -22,16 +23,11 @@ const Checkout = () => {
     hotelInfo,
     checkout,
     setCheckout,
-    handlePress,
-    data,
+    addReservation,
     correctName,
-    setCorrectName,
     correctLastName,
-    setCorrectLastName,
     correctEmail,
-    setCorrectEmail,
     correctPhoneNumber,
-    setCorrectPhoneNumber,
     nameValidation,
     lastNameValidation,
     emailValidation,
@@ -190,28 +186,7 @@ const Checkout = () => {
             </View>
           </View>
           <View style={styles.horizontalLine}></View>
-          <View style={{ marginVertical: 35 }}>
-            <View style={{ flexDirection: "row" }}>
-              {/* <Image
-                source={require("../../assets/images/profilePicture.png")}
-              /> */}
-              <Text style={styles.authorDetails}>Hosted By jolyne kujoh</Text>
-            </View>
-            <View style={styles.authordetailes}>
-              <Text style={{ fontWeight: "500" }}>{hotelInfo.phone}</Text>
-              <TouchableOpacity style={{ flexDirection: "row" }}>
-                <AntDesign name="copy1" size={20} color="#9d9d9d" />
-                <Text style={{ marginLeft: 10, fontWeight: "500" }}>copy</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.authordetailes}>
-              <Text style={{ fontWeight: "500" }}>{hotelInfo.email}</Text>
-              <TouchableOpacity style={{ flexDirection: "row" }}>
-                <AntDesign name="copy1" size={20} color="#9d9d9d" />
-                <Text style={{ marginLeft: 10, fontWeight: "500" }}>copy</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <AuthorDetailes />
           <View style={styles.horizontalLine}></View>
           <View style={styles.activityScheduleWrapper}>
             <View style={styles.activityScheduleHeader}>
@@ -283,7 +258,7 @@ const Checkout = () => {
               correctLastName &&
               correctEmail &&
               correctPhoneNumber
-                ? handlePress()
+                ? addReservation()
                 : errorValidation();
             }
           }}
