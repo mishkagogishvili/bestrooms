@@ -92,7 +92,7 @@ const SearchFilters = () => {
                   onPress={recommendedOnClose}
                   style={styles.ChangeLanguageHeader}
                 >
-                  <Text>Change Language</Text>
+                  <Text>Sort By</Text>
                   <AntDesign name="up" size={24} color="black" />
                 </TouchableOpacity>
                 <View style={{ paddingVertical: 20 }}>
@@ -140,7 +140,7 @@ const SearchFilters = () => {
               <Text>Price range</Text>
               <RangeSlider />
             </View>
-            <View style={styles.segmentWrapper}>
+            {/* <View style={styles.segmentWrapper}>
               <Text>User Rating</Text>
               <View style={styles.ratingWrapper}>
                 <TouchableOpacity activeOpacity={1} style={styles.ratingNumber}>
@@ -209,7 +209,7 @@ const SearchFilters = () => {
                   <Text style={styles.ratingText}>All</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
             <View style={styles.segmentWrapper}>
               <Text>Amenities</Text>
               <View>
