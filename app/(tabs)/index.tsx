@@ -10,6 +10,7 @@ import PopularDestinations from "../ui/PopularDestinations";
 import { useGlobalState } from "@/components/context/GlobalStateProvider";
 import Drawer from "../ui/Drawer";
 import { View } from "@ant-design/react-native";
+import ForYou from "../ui/ForYou";
 
 const App = () => {
   const { openCalendarDrawer, setSuggestions } = useGlobalState();
@@ -37,6 +38,7 @@ const App = () => {
           </View>
         </TouchableWithoutFeedback>
         <PopularDestinations />
+        <ForYou />
       </ScrollView>
       <Drawer
         onOpen={(openFunction) => {
