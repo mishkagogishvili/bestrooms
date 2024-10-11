@@ -5,14 +5,23 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { useGlobalState } from "./context/GlobalStateProvider";
 
 const VerificationCodeScreen = ({
   mobileNumber,
   verificationCode,
   setVerificationCode,
   handleSubmitCode,
+  invalidCode,
 }) => {
+  const { sendSMS, setInputNumber, sendVerificationCode } = useGlobalState();
+
+  function retry() {
+    setInputNumber(mobileNumber);
+    sendSMS();
+  }
+
   return (
     <View style={styles.loginWrapper}>
       <Text style={{ fontWeight: "bold", fontSize: 16 }}>
@@ -30,6 +39,15 @@ const VerificationCodeScreen = ({
           }}
         />
       </View>
+      <TouchableOpacity activeOpacity={1} onPress={retry}>
+        <Text style={{ fontSize: 17, textDecorationLine: "underline" }}>
+          Resend code
+        </Text>
+      </TouchableOpacity>
+      {invalidCode && (
+        <Text style={styles.error}>Please Enter Correct Code</Text>
+      )}
+
       <TouchableOpacity activeOpacity={1} onPress={handleSubmitCode}>
         <Text style={styles.formButton}>Continue</Text>
       </TouchableOpacity>
@@ -66,5 +84,10 @@ const styles = StyleSheet.create({
     marginTop: 25,
     textAlign: "center",
     borderRadius: 4,
+  },
+  error: {
+    fontSize: 17,
+    color: "red",
+    marginTop: 15,
   },
 });
