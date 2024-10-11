@@ -23,8 +23,13 @@ export default function App() {
   const router = useRouter();
 
   useEffect(() => {
-    if (searchResult.data && searchResult.data.length > 0) {
-      const coordinates = searchResult.data.map((result) => ({
+    if (
+      searchResult &&
+      searchResult.hotels &&
+      searchResult.hotels.data &&
+      searchResult.hotels.data.length > 0
+    ) {
+      const coordinates = searchResult.hotels.data.map((result) => ({
         latitude: parseFloat(result.latitude),
         longitude: parseFloat(result.longitude),
       }));
@@ -52,7 +57,7 @@ export default function App() {
         }, 500);
       }
     }
-  }, [searchResult.data]);
+  }, [searchResult.hotels.data]);
 
   const navigateToDetail = (item, id) => {
     router.push(`/ui/HotelPage/?id=${item.id}`);
@@ -62,12 +67,15 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        {searchResult.data.length > 0 && (
+        {searchResult &&
+        searchResult.hotels &&
+        searchResult.hotels.data &&
+        searchResult.hotels.data.length > 0 ? (
           <MapView
             ref={mapRef}
             initialRegion={{
-              latitude: parseFloat(searchResult.data[0].latitude),
-              longitude: parseFloat(searchResult.data[0].longitude),
+              latitude: parseFloat(searchResult.hotels.data[0].latitude),
+              longitude: parseFloat(searchResult.hotels.data[0].longitude),
               latitudeDelta: 0.05,
               longitudeDelta: 0.05,
             }}
@@ -81,7 +89,7 @@ export default function App() {
             style={styles.map}
             onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
           >
-            {searchResult.data.map((marker, index) => (
+            {searchResult.hotels.data.map((marker, index) => (
               <Marker
                 key={index}
                 coordinate={{
@@ -92,6 +100,8 @@ export default function App() {
               />
             ))}
           </MapView>
+        ) : (
+          <Text>Loading</Text>
         )}
       </View>
 

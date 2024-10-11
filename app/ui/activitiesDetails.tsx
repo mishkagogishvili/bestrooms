@@ -55,8 +55,10 @@ const activitiesDetails = () => {
                 afterChange={onHorizontalSelectedIndexChange}
                 ref={carouselRef}
               >
-                {premiumService && premiumService.images ? (
-                  premiumService.images.map((images) => {
+                {premiumService &&
+                premiumService.premiumService &&
+                premiumService.premiumService.images ? (
+                  premiumService.premiumService.images.map((images) => {
                     return (
                       <View style={[styles.containerHorizontal]}>
                         <Image
@@ -90,20 +92,24 @@ const activitiesDetails = () => {
             </View>
             <TouchableOpacity
               activeOpacity={1}
-              onPress={() => navigateToHotelImages(premiumService)}
+              onPress={() =>
+                navigateToHotelImages(premiumService.premiumService)
+              }
               style={styles.pictureCount}
             >
               <AntDesign name="picture" size={24} color="white" />
               <Text style={styles.pictureCountText}>1/10</Text>
             </TouchableOpacity>
           </View>
-          {premiumService && premiumService.translations ? (
+          {premiumService &&
+          premiumService.premiumService &&
+          premiumService.premiumService.translations ? (
             <View style={styles.container}>
               <Text style={styles.activityName}>
-                {premiumService.translations[0].title}
+                {premiumService.premiumService.translations[0].title}
               </Text>
               <Text style={styles.description}>
-                {premiumService.translations[0].description}
+                {premiumService.premiumService.translations[0].description}
               </Text>
               <View style={styles.horizontalLine}></View>
               <View style={{ marginBottom: 70 }}>
@@ -134,7 +140,9 @@ const activitiesDetails = () => {
         <TouchableOpacity activeOpacity={1} style={styles.showBtnActive}>
           <Text style={styles.showBtnText}>Add to bill</Text>
           <Text style={{ color: "white" }}>
-            {premiumService.price}
+            {premiumService && premiumService.premiumService
+              ? premiumService.premiumService.price
+              : null}
             {changeCurrency === "usd" ? "$" : "₾"}
           </Text>
         </TouchableOpacity>

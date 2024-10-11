@@ -9,9 +9,21 @@ import {
 } from "react-native";
 import { Link } from "expo-router";
 import { useGlobalState } from "../../components/context/GlobalStateProvider";
+import { useRouter } from "expo-router";
 
 const PopularDestinations = () => {
-  const { db, hotelList, toggleFavorite } = useGlobalState();
+  const { db, hotelList, toggleFavorite, setSearchQuery } = useGlobalState();
+
+  function setSearchQueryByPopularDestination(query) {
+    setSearchQuery((prevQuery) => {
+      return query;
+    });
+  }
+  const router = useRouter();
+
+  const navigateToSearch = () => {
+    router.push("/ui/SearchResultsPage ");
+  };
 
   return (
     <>
@@ -28,23 +40,34 @@ const PopularDestinations = () => {
 
         <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
           <View style={styles.cardsWrapper}>
-            {hotelList.map((item) => (
-              <View key={item.id} style={styles.card}>
-                <Image
-                  style={styles.cardImage}
-                  source={{ uri: item.images[0].url }}
-                />
-                <View>
-                  <Text>{item.name}</Text>
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => toggleFavorite(item.id)}
-                  >
-                    <Text>{item.isFavorite ? "unfavorite" : "favorite"}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))}
+            {hotelList && hotelList.hotelDestinations ? (
+              hotelList.hotelDestinations.map((destination) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSearchQueryByPopularDestination(
+                      destination.translations[0].title
+                    );
+                    navigateToSearch();
+                  }}
+                  activeOpacity={1}
+                  key={destination.id}
+                  style={styles.card}
+                >
+                  <Image
+                    style={styles.cardImage}
+                    source={{ uri: destination.picture }}
+                  />
+                  <Text>
+                    {destination.translations.length > 0 &&
+                    destination.translations[0].title
+                      ? destination.translations[0].title
+                      : "unknown destination"}
+                  </Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text>Loading...</Text>
+            )}
           </View>
         </ScrollView>
       </View>
@@ -85,8 +108,8 @@ const styles = StyleSheet.create({
   },
   card: {
     width: 242,
-    height: 300,
-    justifyContent: "space-between", // Ensure image and button are spaced properly
+    height: 240,
+    justifyContent: "space-between",
   },
   cardImage: {
     width: "100%",

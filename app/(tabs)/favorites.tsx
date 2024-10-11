@@ -62,101 +62,111 @@ const favorites = () => {
       </View>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View>
-          {hotelList.map((item) => {
-            return (
-              <View key={item.id}>
-                <TouchableOpacity
-                  onPress={() => navigateToDetail(item, item.id)}
-                  activeOpacity={1}
-                  style={styles.favoritesCardBodyWrapper}
-                >
-                  <View style={styles.favoritesCardBody}>
-                    <Image
-                      source={{ uri: item.images[0].url }}
-                      style={styles.favoritesCardImage}
-                    />
-                    <TouchableOpacity
-                      style={styles.cardHeart}
-                      onPress={() => {
-                        toggleFavorite(item.id);
-                        removeNotificationFunction();
-                      }}
-                    >
-                      <AntDesign
-                        style={styles.heartIcon}
-                        name="heart"
-                        size={24}
-                        color="#FF0000"
+          {hotelList && hotelList.hotels && hotelList.hotels.data ? (
+            hotelList.hotels.data.map((item) => {
+              return (
+                <View key={item.id}>
+                  <TouchableOpacity
+                    onPress={() => navigateToDetail(item, item.id)}
+                    activeOpacity={1}
+                    style={styles.favoritesCardBodyWrapper}
+                  >
+                    <View style={styles.favoritesCardBody}>
+                      <Image
+                        source={{ uri: item.images[0].url }}
+                        style={styles.favoritesCardImage}
                       />
-                    </TouchableOpacity>
-                    <View style={styles.onMap}>
-                      <AntDesign
-                        style={styles.locationDot}
-                        name="enviromento"
-                        size={16}
-                        color="black"
-                      />
+                      <TouchableOpacity
+                        style={styles.cardHeart}
+                        onPress={() => {
+                          toggleFavorite(item.id);
+                          removeNotificationFunction();
+                        }}
+                      >
+                        <AntDesign
+                          style={styles.heartIcon}
+                          name="heart"
+                          size={24}
+                          color="#FF0000"
+                        />
+                      </TouchableOpacity>
+                      <View style={styles.onMap}>
+                        <AntDesign
+                          style={styles.locationDot}
+                          name="enviromento"
+                          size={16}
+                          color="black"
+                        />
 
-                      <Text>on map</Text>
-                    </View>
-                    {/* {item.discount > 0 && (
+                        <Text>on map</Text>
+                      </View>
+                      {/* {item.discount > 0 && (
               <View style={styles.cardDiscount}>
                 <Text style={styles.cardDiscountText}>
                   -{item.discount}%
                 </Text>
               </View>
             )} */}
-                    <View style={styles.favoritesCardImage}>
-                      <Text style={styles.cardName}>
-                        {item.translations[0].title}
-                      </Text>
-                      <View style={styles.cardContentFirstSection}>
-                        <View style={styles.singleStarWtapper}>
-                          <FontAwesome
-                            name="star-half-empty"
-                            size={24}
-                            color="#ffd363"
-                          />
-                          <Text style={styles.rating}>{item.star_rating}</Text>
-                          <Text style={styles.review}>
-                            {/* ({item.reviews} reviews) */} (3)
-                          </Text>
-                        </View>
-                        <TouchableOpacity activeOpacity={1}>
-                          <StarRating
-                            defaultRating={item.star_rating}
-                            onSetRating={setUserRating}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                      <View style={styles.cardContentSecondSection}>
-                        {/* {item.cancelation && ( */}
-                        <View style={styles.freeCancelation}>
-                          <View style={styles.freeCancelationView}>
-                            <AntDesign name="check" size={20} color="#208e17" />
+                      <View style={styles.favoritesCardImage}>
+                        <Text style={styles.cardName}>
+                          {item.translations[0].title}
+                        </Text>
+                        {/* <View style={styles.cardContentFirstSection}>
+                          <View style={styles.singleStarWtapper}>
+                            <FontAwesome
+                              name="star-half-empty"
+                              size={24}
+                              color="#ffd363"
+                            />
+                            <Text style={styles.rating}>
+                              {item.star_rating}
+                            </Text>
+                            <Text style={styles.review}>
+                              ({item.reviews} reviews) (3)
+                            </Text>
                           </View>
-                          <Text style={styles.freeCancelationText}>
-                            Free Cancelation
-                          </Text>
+                          <TouchableOpacity activeOpacity={1}>
+                            <StarRating
+                              defaultRating={item.star_rating}
+                              onSetRating={setUserRating}
+                            />
+                          </TouchableOpacity>
+                        </View> */}
+                        <View style={styles.cardContentSecondSection}>
+                          {/* {item.cancelation && ( */}
+                          <View style={styles.freeCancelation}>
+                            <View style={styles.freeCancelationView}>
+                              <AntDesign
+                                name="check"
+                                size={20}
+                                color="#208e17"
+                              />
+                            </View>
+                            <Text style={styles.freeCancelationText}>
+                              Free Cancelation
+                            </Text>
+                          </View>
+                          {/* )} */}
+                          <View style={styles.priceNightWrapper}>
+                            {/* <Text style={styles.price}>${item.price}</Text> */}
+                            <Text style={styles.price}>
+                              {" "}
+                              {changeCurrency === "usd" ? "$" : "₾"}
+                              {item.min_price}
+                            </Text>
+                            <Text style={styles.night}> / night</Text>
+                          </View>
                         </View>
-                        {/* )} */}
-                        <View style={styles.priceNightWrapper}>
-                          {/* <Text style={styles.price}>${item.price}</Text> */}
-                          <Text style={styles.price}>
-                            {" "}
-                            {changeCurrency === "usd" ? "$" : "₾"}
-                            {item.min_price}
-                          </Text>
-                          <Text style={styles.night}> / night</Text>
-                        </View>
+                        <View style={styles.horizontalLine}></View>
                       </View>
-                      <View style={styles.horizontalLine}></View>
                     </View>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            );
-          })}
+                  </TouchableOpacity>
+                </View>
+              );
+            })
+          ) : (
+            <Text>Loading...</Text>
+          )}
         </View>
       </ScrollView>
       <View

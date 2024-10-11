@@ -44,6 +44,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
 
   const [hotelList, setHotelList] = useState([]);
   const [hotelInfo, setHotelInfo] = useState([]);
+
   const [hotelRooms, setHotelRooms] = useState([]);
   const [hotelRoom, setHotelRoom] = useState([]);
   const [premiumService, setPremiumService] = useState([]);
@@ -57,7 +58,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
 
   //  ChangeLanguage და ChangeCurrency სთეითები
   const [changeLanguage, setChangeLanguage] = useState("EN");
-  const [changeCurrency, setChangeCurrency] = useState("usd");
+  const [changeCurrency, setChangeCurrency] = useState("gel");
 
   // hotel List ეიპიაი ქოლი
   useEffect(() => {
@@ -72,7 +73,8 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
         }
       );
       const data = await response.json();
-      setHotelList(data.data);
+
+      setHotelList(data);
     };
 
     fetchHotelList();
@@ -159,7 +161,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = React.useState<string | null>(null);
   const [data, setData] = React.useState<any>(null);
 
-  const handlePress = async () => {
+  const addReservation = async () => {
     try {
       const response = await fetch(
         "https://bestrooms.app/api/hotels/reservation/add",
@@ -173,17 +175,17 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
             from: startDate ? startDate : today.toISOString().slice(0, 10),
             to: endDate ? endDate : tomorrow.toISOString().slice(0, 10),
             room_id: roomId,
-            price: 200.0,
+            // price: 1.0,
             first_name: checkout.name,
             last_name: checkout.last_name,
             phone: checkout.mobile,
             email: checkout.email,
             adult: countAdults,
             kid: countChildren,
-            currency: changeCurrency,
-            transaction_id: "2dasd",
             country: "GE",
             lang: changeLanguage,
+            // transaction_id: "2dasd",
+            currency: changeCurrency,
           }),
         }
       );
@@ -192,14 +194,48 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
       setData(result);
 
       if (result.success) {
-        // Navigate to the HotelPage with a message
-        router.push(`/ui/HotelPage?id=${hotelId}&message=Order%20created`);
+        router.push(result.payment_info._links.redirect.href);
       } else {
-        // Handle the case where the order was not created successfully
         console.error("Order creation failed:", result.message);
       }
     } catch (error) {
       console.error("Error during order creation:", error);
+    }
+  };
+
+  // sms ვერიფიკაციის ეიპიაი
+
+  const [sendVerificationCode, setSendVerificationCode] = useState("");
+  const [inputNumber, setInputNumber] = useState("");
+
+  const sendSMS = async () => {
+    try {
+      setInputNumber((prevInputNumber) => {
+        const cleanedNumber = prevInputNumber.replace(/\s+/g, "");
+
+        fetch("https://bestrooms.app/api/sms/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            destination: cleanedNumber,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              setSendVerificationCode(data.code);
+              setInputNumber("");
+            } else {
+              console.log("Error", "Failed to send SMS");
+            }
+          });
+
+        return "";
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -264,8 +300,10 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
         card.id === id ? { ...card, rating: newRating } : card
       )
     );
+    0;
   };
-  const [userRating, setUserRating] = useState(hotelList.star_rating);
+  // test test
+  const [userRating, setUserRating] = useState("");
 
   // აქტიური ღილაკი active გვერდზე
   const [activeBtn, setActiveBtn] = useState("1");
@@ -489,7 +527,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
       destination: "",
       check_in: "",
       check_out: "",
-      adults: 0,
+      adults: 1,
       children: 0,
     },
   ]);
@@ -498,7 +536,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchSearch = async () => {
       const response = await fetch(
-        `https://bestrooms.app/api/search?searchPhrase=${search[0].destination}&checkinDate=${search[0].check_in}&checkoutDate=${search[0].check_out}&adults=${search[0].adults}&children=${search[0].children}&lang=${language}&currency=${changeCurrency}&per_page=10`,
+        `https://bestrooms.app/api/hotels/search?searchPhrase=${search[0].destination}&checkinDate=${search[0].check_in}&checkoutDate=${search[0].check_out}&adults=${search[0].adults}&children=${search[0].children}&lang=${language}&currency=${changeCurrency}&per_page=10`,
         {
           headers: {
             Accept: "application/json",
@@ -640,7 +678,7 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
         openDrawerLanguage,
         checkout,
         setCheckout,
-        handlePress,
+        addReservation,
         data,
         region,
         setRegion,
@@ -663,6 +701,10 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
         setCallingCode,
         countryCode,
         setCountryCode,
+        setInputNumber,
+        inputNumber,
+        sendSMS,
+        sendVerificationCode,
       }}
     >
       {children}

@@ -29,10 +29,13 @@ const RoomsPage = () => {
   const handleBackPress = () => {
     navigation.goBack();
   };
+  console.log();
 
   const navigation = useNavigation();
 
-  const item = hotelList.find((item) => item.id === parseInt(id, 10));
+  const item = hotelList.hotels.data.find(
+    (item) => item.id === parseInt(id, 10)
+  );
 
   const navigateToCheckout = (hotel, room) => {
     router.push(`/ui/Checkout/?id=${hotel}&room=${room}`);
@@ -51,7 +54,7 @@ const RoomsPage = () => {
       headerRight: () => (
         <View style={{ marginRight: 20 }}>
           <Text style={styles.resetFilters}>
-            {hotelInfo.rooms.length} rooms
+            {hotelInfo.hotel.rooms.length} rooms
           </Text>
         </View>
       ),
@@ -74,7 +77,7 @@ const RoomsPage = () => {
   return (
     <ScrollView>
       <View style={{ marginTop: 25 }}>
-        {hotelInfo.rooms.map((room) => {
+        {hotelInfo.hotel.rooms.map((room) => {
           return (
             <>
               <View style={{ marginHorizontal: "auto" }}>

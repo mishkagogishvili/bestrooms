@@ -13,9 +13,9 @@ import PremiumServiceImages from "./PremiumServiceImages";
 const PremiumServiceImg = () => {
   const { premiumService } = useGlobalState();
 
-  const countImages = premiumService.images.length;
+  const countImages = premiumService.premiumService.images.length;
 
-  const roomImages = premiumService.images;
+  const roomImages = premiumService.premiumService.images;
 
   const navigation = useNavigation();
 
@@ -48,7 +48,9 @@ const PremiumServiceImg = () => {
 
   return (
     <GestureHandlerRootView>
-      {premiumService && premiumService.images ? (
+      {premiumService &&
+      premiumService.premiumService &&
+      premiumService.premiumService.images ? (
         <ScrollView>
           <PremiumServiceImages roomImages={roomImages} />
         </ScrollView>

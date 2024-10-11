@@ -14,8 +14,6 @@ const RoomAmenities = ({ state, data }) => {
   const { hotelRoom } = useGlobalState();
   const [showAll, setShowAll] = useState(false);
 
-  console.log(data);
-
   const iconMapping = {
     amenity_air_conditioning: {
       icon: (
@@ -174,11 +172,11 @@ const RoomAmenities = ({ state, data }) => {
   const handleShowAllToggle = () => setShowAll((prev) => !prev);
 
   const displayedAmenities =
-    hotelRoom && hotelRoom.amenities ? (
+    hotelRoom && hotelRoom.room && hotelRoom.room.amenities ? (
       showAll ? (
-        hotelRoom.amenities
+        hotelRoom.room.amenities
       ) : (
-        hotelRoom.amenities.slice(0, 5)
+        hotelRoom.room.amenities.slice(0, 5)
       )
     ) : (
       <Text>loading...</Text>
@@ -212,7 +210,10 @@ const RoomAmenities = ({ state, data }) => {
           <Text style={styles.text}>Property Amenities</Text>
           <Text style={styles.text}>(free access)</Text>
         </View>
-        {hotelRoom && hotelRoom.amenities && displayedAmenities ? (
+        {hotelRoom &&
+        hotelRoom.room &&
+        hotelRoom.room.amenities &&
+        displayedAmenities ? (
           displayedAmenities.map((amenitie, index) => {
             const amenityName = amenitie.name.trim().toLowerCase();
             const amenityDetails = iconMapping[amenityName];
@@ -227,8 +228,11 @@ const RoomAmenities = ({ state, data }) => {
         ) : (
           <Text>loading...</Text>
         )}
-        {hotelRoom && hotelRoom.amenities && displayedAmenities ? (
-          hotelRoom.amenities.length > 5 && (
+        {hotelRoom &&
+        hotelRoom.room &&
+        hotelRoom.room.amenities &&
+        displayedAmenities ? (
+          hotelRoom.room.amenities.length > 5 && (
             <TouchableOpacity
               activeOpacity={1}
               style={styles.amenitiesBtn}
@@ -237,7 +241,7 @@ const RoomAmenities = ({ state, data }) => {
               <Text style={styles.amenitiesBtnText}>
                 {showAll
                   ? "Hide Amenities"
-                  : `View all Amenities (${hotelRoom.amenities.length})`}
+                  : `View all Amenities (${hotelRoom.room.amenities.length})`}
               </Text>
             </TouchableOpacity>
           )

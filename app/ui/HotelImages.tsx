@@ -15,9 +15,9 @@ const HotelImages = () => {
 
   const [activeTab, setActiveTab] = useState(1);
 
-  const countImages = hotelInfo.length;
+  const countImages = hotelInfo.hotel.length;
 
-  const hotelImages = hotelInfo.images;
+  const hotelImages = hotelInfo.hotel.images;
 
   function tabHandler(index) {
     setActiveTab(index);
