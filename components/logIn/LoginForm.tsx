@@ -11,13 +11,19 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import LoginTypeTextInput from "../LoginTypeTextInput";
 import CountryCodePicker from "../CountryCodePicket";
 
-const LoginForm = ({ handleSubmit, mobileNumber, setMobileNumber }) => {
+const LoginForm = ({
+  handleSubmit,
+  mobileNumber,
+  setMobileNumber,
+  mobileNumberValidation,
+}) => {
   return (
     <View style={styles.loginWrapper}>
       <View>
         <CountryCodePicker
           mobileNumber={mobileNumber}
           setMobileNumber={setMobileNumber}
+          mobileNumberValidation={mobileNumberValidation}
         />
       </View>
       <Text style={{ color: "grey" }}>
