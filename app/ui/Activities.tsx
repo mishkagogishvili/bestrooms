@@ -17,8 +17,8 @@ const Activities = () => {
   const handleShowAllToggle = () => setShowAll((prev) => !prev);
 
   const displayedActivities = showAll
-    ? hotelInfo.premium_services
-    : hotelInfo.premium_services.slice(0, 2);
+    ? hotelInfo.hotel.premium_services
+    : hotelInfo.hotel.premium_services.slice(0, 2);
 
   return (
     <View>
@@ -39,7 +39,7 @@ const Activities = () => {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => navigateToActivities(hotelInfo)}
+              onPress={() => navigateToActivities(service)}
               style={styles.activitiesDetails}
               activeOpacity={1}
             >
@@ -55,7 +55,8 @@ const Activities = () => {
         onPress={handleShowAllToggle}
       >
         <Text style={styles.amenitiesBtnText}>
-          All activities and services (12)
+          All activities and services ({hotelInfo.hotel.premium_services.length}
+          )
         </Text>
       </TouchableOpacity>
     </View>

@@ -21,7 +21,9 @@ const PremiumServiceImagesView = () => {
     navigation.goBack();
   };
 
-  const serviceImage = premiumService.images;
+  const serviceImage = premiumService.premiumService.images;
+  const foundImageIndex = serviceImage.findIndex((image) => image.url === url);
+  const totalImages = premiumService.premiumService.images.length;
 
   const foundImage = serviceImage.find((image) => image.url === url);
 
@@ -38,8 +40,7 @@ const PremiumServiceImagesView = () => {
       headerRight: () => (
         <View style={{ marginRight: 20 }}>
           <Text>
-            {foundImage.id} / {` `}
-            {premiumService.images.length}
+            {foundImageIndex + 1} / {totalImages}
           </Text>
         </View>
       ),

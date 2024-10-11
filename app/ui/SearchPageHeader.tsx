@@ -8,8 +8,13 @@ import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 const SearchPageHeader = () => {
-  const { searchText, setSearchText, searchQuery, setSearchQuery } =
-    useGlobalState();
+  const {
+    searchText,
+    setSearchText,
+    searchQuery,
+    setSearchQuery,
+    setSuggestions,
+  } = useGlobalState();
 
   const router = useRouter();
 
@@ -40,6 +45,18 @@ const SearchPageHeader = () => {
     setSearchText("");
   }
 
+  function searchTextHandler(text: string) {
+    setSearchText(text);
+    if (searchText.length > 5) {
+      setSearchQuery(text);
+      setSuggestions(text);
+    }
+  }
+
+  function handleSubmitEditing() {
+    setSuggestions("");
+  }
+
   return (
     <View style={styles.searchPageHeader}>
       <View style={styles.searchPageBackBtn}>
@@ -48,12 +65,13 @@ const SearchPageHeader = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.searchPageInputWrapper}>
-        <AntDesign name="search1" size={24} style={styles.icon} />
+        <AntDesign name="search1" size={24} style={{ paddingRight: 10 }} />
         <TextInput
-          value={searchText}
-          onChangeText={setSearchText}
-          placeholder={searchText ? searchText : "Enter your destination"}
           style={styles.search}
+          value={searchText}
+          onChangeText={searchTextHandler}
+          placeholder={searchText ? searchText : "Enter your destination"}
+          onSubmitEditing={handleSubmitEditing}
         />
         {!searchQuery ? (
           <TouchableOpacity

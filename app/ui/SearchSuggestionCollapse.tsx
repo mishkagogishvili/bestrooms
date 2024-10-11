@@ -34,7 +34,7 @@ const SearchSuggestionsCollapse = () => {
 
       const lowercasedSearchText = searchText.toLowerCase();
 
-      const filtered = hotelList.filter((hotel) => {
+      const filtered = hotelList.hotels.data.filter((hotel) => {
         const keywordsMatch = hotel.keywords
           .toLowerCase()
           .includes(lowercasedSearchText);

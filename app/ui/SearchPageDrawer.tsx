@@ -59,7 +59,7 @@ const SearchPageDrawer = () => {
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      index={1} // Initially closed
+      index={1}
       snapPoints={snapPoints}
       enablePanDownToClose={false}
     >
@@ -70,7 +70,7 @@ const SearchPageDrawer = () => {
           </Text>
 
           <View>
-            {searchResult.data.map((item) => {
+            {searchResult.hotels.data.map((item) => {
               return (
                 <View key={item.id}>
                   <TouchableOpacity
@@ -117,7 +117,7 @@ const SearchPageDrawer = () => {
                         <Text style={styles.cardName}>
                           {item.translations[0].title}
                         </Text>
-                        <View style={styles.cardContentFirstSection}>
+                        {/* <View style={styles.cardContentFirstSection}>
                           <View style={styles.singleStarWtapper}>
                             <FontAwesome
                               name="star-half-empty"
@@ -128,7 +128,7 @@ const SearchPageDrawer = () => {
                               {item.star_rating}
                             </Text>
                             <Text style={styles.review}>
-                              {/* ({item.reviews} reviews) */} (3)
+                              ({item.reviews} reviews)  (3)
                             </Text>
                           </View>
                           <TouchableOpacity activeOpacity={1}>
@@ -137,7 +137,7 @@ const SearchPageDrawer = () => {
                               onSetRating={setUserRating}
                             />
                           </TouchableOpacity>
-                        </View>
+                        </View> */}
                         <View style={styles.cardContentSecondSection}>
                           {/* {item.cancelation && ( */}
                           <View style={styles.freeCancelation}>

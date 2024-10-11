@@ -14,8 +14,16 @@ import VerificationCodeScreen from "@/components/VerificationCodeScreen";
 import SignUpScreen from "@/components/SignUpScreen";
 
 const Login = () => {
-  const { callingCode, countryCode } = useGlobalState();
+  const {
+    callingCode,
+    countryCode,
+    setInputNumber,
+    sendSMS,
+    sendVerificationCode,
+  } = useGlobalState();
   const [mobileNumber, setMobileNumber] = useState("");
+  const [mobileNumberValidation, setMobileNumberValidation] = useState(true);
+  const [invalidCode, setInvalidCode] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [verificationCode, setVerificationCode] = useState();
   const [isSubmittedCode, setIsSubmittedCode] = useState(false);
@@ -28,16 +36,24 @@ const Login = () => {
     },
   ]);
 
-  console.log(callingCode);
-
   const handleSubmit = () => {
-    if (mobileNumber) {
+    if (mobileNumber.length > 4) {
       setIsSubmitted(true);
+      setInputNumber(mobileNumber);
+      sendSMS();
+      setMobileNumberValidation(true);
+    } else {
+      setMobileNumberValidation(false);
     }
   };
   const handleSubmitCode = () => {
-    if (verificationCode) {
+    if (verificationCode !== sendVerificationCode) {
+      setInvalidCode(true);
+    }
+
+    if (verificationCode == sendVerificationCode) {
       setIsSubmittedCode(true);
+      setInvalidCode(false);
     }
   };
   const navigation = useNavigation();
@@ -56,6 +72,7 @@ const Login = () => {
           handleSubmit={handleSubmit}
           mobileNumber={mobileNumber}
           setMobileNumber={setMobileNumber}
+          mobileNumberValidation={mobileNumberValidation}
         />
       )}
       {isSubmitted && !isSubmittedCode && (
@@ -64,6 +81,7 @@ const Login = () => {
           verificationCode={verificationCode}
           setVerificationCode={setVerificationCode}
           handleSubmitCode={handleSubmitCode}
+          invalidCode={invalidCode}
         />
       )}
       {isSubmittedCode && (

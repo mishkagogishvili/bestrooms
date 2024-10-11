@@ -21,9 +21,11 @@ const RoomImagesView = () => {
     navigation.goBack();
   };
 
-  const hotelImage = hotelRoom.images;
+  const hotelImage = hotelRoom.room.images;
+  const foundImageIndex = hotelImage.findIndex((image) => image.url === url);
+  const totalImages = hotelRoom.room.images.length;
 
-  const foundImage = hotelImage.find((image) => image.url === url);
+  console.log(hotelImage);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -38,8 +40,7 @@ const RoomImagesView = () => {
       headerRight: () => (
         <View style={{ marginRight: 20 }}>
           <Text>
-            {foundImage.id} / {` `}
-            {hotelRoom.images.length}
+            {foundImageIndex + 1} /{totalImages}
           </Text>
         </View>
       ),

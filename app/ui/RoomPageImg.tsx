@@ -12,9 +12,9 @@ import RoomImages from "./RoomImages";
 const RoomPageImg = () => {
   const { hotelRoom } = useGlobalState();
 
-  const countImages = hotelRoom.length;
+  const countImages = hotelRoom.room.length;
 
-  const roomImages = hotelRoom.images;
+  const roomImages = hotelRoom.room.images;
 
   const navigation = useNavigation();
 
