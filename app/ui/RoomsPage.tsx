@@ -22,6 +22,7 @@ const RoomsPage = () => {
     setHotelId,
     hotelList,
     changeCurrency,
+    hotelInfo,
   } = useGlobalState();
   const { id } = useGlobalSearchParams();
 
@@ -49,7 +50,9 @@ const RoomsPage = () => {
       },
       headerRight: () => (
         <View style={{ marginRight: 20 }}>
-          <Text style={styles.resetFilters}> {hotelRooms.length} rooms</Text>
+          <Text style={styles.resetFilters}>
+            {hotelInfo.rooms.length} rooms
+          </Text>
         </View>
       ),
       headerLeft: () => (
@@ -71,7 +74,7 @@ const RoomsPage = () => {
   return (
     <ScrollView>
       <View style={{ marginTop: 25 }}>
-        {hotelRooms.map((room) => {
+        {hotelInfo.rooms.map((room) => {
           return (
             <>
               <View style={{ marginHorizontal: "auto" }}>

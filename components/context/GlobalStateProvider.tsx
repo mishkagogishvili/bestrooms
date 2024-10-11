@@ -97,25 +97,6 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
     fetchHotelInfo();
   }, [hotelId, language, changeCurrency]);
 
-  // hotel rooms ეიპიაი ქოლი
-  useEffect(() => {
-    const fetchHotelRooms = async () => {
-      const response = await fetch(
-        `https://bestrooms.app/hotels/${hotelId}/rooms?lang=${language}&currency=${changeCurrency}`,
-        {
-          headers: {
-            Accept: "application/json",
-            "Access-control-allow-origin": "*",
-          },
-        }
-      );
-      const data = await response.json();
-      setHotelRooms(data);
-    };
-
-    fetchHotelRooms();
-  }, [hotelId, language, changeCurrency]);
-
   // hotel room ეიპიაი ქოლი
   useEffect(() => {
     const fetchHotelRoom = async () => {
@@ -576,6 +557,9 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
     setSelectedMarker(marker);
   };
 
+  const [callingCode, setCallingCode] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+
   return (
     <GlobalContext.Provider
       value={{
@@ -652,7 +636,6 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
         handleOpenCurrencyDrawer,
         handleOpenLanguageDrawer,
         setLanguage,
-
         openDrawerCurrency,
         openDrawerLanguage,
         checkout,
@@ -676,6 +659,10 @@ export const GlobalStateProvider = ({ children }: { children: ReactNode }) => {
         lastNameValidation,
         emailValidation,
         phoneValidation,
+        callingCode,
+        setCallingCode,
+        countryCode,
+        setCountryCode,
       }}
     >
       {children}

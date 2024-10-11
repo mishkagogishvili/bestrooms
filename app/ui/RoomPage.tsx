@@ -216,7 +216,7 @@ const RoomPage = () => {
               </Text>
               <View style={styles.horizontalLine}></View>
               <View>
-                <RoomAmenities state={false} />
+                <RoomAmenities state={false} data={null} />
               </View>
               {/* ოთახის რევიუები */}
               {/* <View style={styles.horizontalLine}></View>

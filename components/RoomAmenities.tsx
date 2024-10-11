@@ -10,9 +10,11 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
-const RoomAmenities = ({ state }) => {
+const RoomAmenities = ({ state, data }) => {
   const { hotelRoom } = useGlobalState();
   const [showAll, setShowAll] = useState(false);
+
+  console.log(data);
 
   const iconMapping = {
     amenity_air_conditioning: {
@@ -29,7 +31,7 @@ const RoomAmenities = ({ state }) => {
       icon: <FontAwesome5 name="mouse-pointer" size={24} color="black" />,
       label: "internet",
     },
-    amenity_TV: {
+    amenity_tv: {
       icon: <FontAwesome5 name="tv" size={24} color="black" />,
       label: "TV",
     },
@@ -181,18 +183,12 @@ const RoomAmenities = ({ state }) => {
     ) : (
       <Text>loading...</Text>
     );
-  const displayedCardAmenities =
-    hotelRoom && hotelRoom.amenities ? (
-      hotelRoom.amenities.slice(0, 3)
-    ) : (
-      <Text>loading...</Text>
-    );
 
   if (state) {
     return (
       <>
-        {hotelRoom && hotelRoom.amenities && displayedCardAmenities ? (
-          displayedCardAmenities.map((amenitie, index) => {
+        {data && data != undefined ? (
+          data.map((amenitie, index) => {
             const amenityName = amenitie.name.trim().toLowerCase();
             const amenityDetails = iconMapping[amenityName];
             return amenityDetails ? (
