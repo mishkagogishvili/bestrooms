@@ -10,9 +10,19 @@ import CountryPicker from "react-native-country-picker-modal";
 import * as Location from "expo-location";
 import { useGlobalState } from "./context/GlobalStateProvider";
 
-const CountryCodePicker = ({ setMobileNumber, mobileNumber }) => {
-  const { setCallingCode, callingCode, countryCode, setCountryCode } =
-    useGlobalState();
+const CountryCodePicker = ({
+  setMobileNumber,
+  mobileNumber,
+  mobileNumberValidation,
+}) => {
+  const {
+    setCallingCode,
+    callingCode,
+    countryCode,
+    setCountryCode,
+    setInputNumber,
+    inputNumber,
+  } = useGlobalState();
   const [isPickerVisible, setPickerVisible] = useState(false);
 
   const fetchCountryCode = async () => {
@@ -34,14 +44,12 @@ const CountryCodePicker = ({ setMobileNumber, mobileNumber }) => {
           setCountryCode(data.countryCode);
           const code = getCallingCode(data.countryCode);
           setCallingCode(code);
-          // Set initial mobile number with calling code
-          setMobileNumber(`+${code} `); // Set the mobile number with the calling code
+          setMobileNumber(`${code} `);
         }
       })
       .catch((error) => console.error("Error fetching country code:", error));
   };
 
-  // Get calling code based on country code
   const getCallingCode = (countryCode) => {
     const callingCodes = {
       US: "1",
@@ -63,9 +71,13 @@ const CountryCodePicker = ({ setMobileNumber, mobileNumber }) => {
     setCountryCode(country.cca2);
     const code = country.callingCode[0];
     setCallingCode(code);
-    setMobileNumber(`+${code} `); // Update mobile number with new calling code
+    setMobileNumber(code); // Update mobile number with new calling code
     setPickerVisible(false); // Close picker after selection
   };
+
+  function handleSubmitEditing() {
+    setInputNumber(mobileNumber);
+  }
 
   return (
     <View style={styles.container}>
@@ -89,14 +101,18 @@ const CountryCodePicker = ({ setMobileNumber, mobileNumber }) => {
 
       <TextInput
         keyboardType="numeric"
-        maxLength={14}
+        maxLength={13}
         style={styles.input}
         placeholder="Phone number"
         value={mobileNumber}
         onChangeText={(text) => {
           setMobileNumber(text);
         }}
+        onSubmitEditing={handleSubmitEditing}
       />
+      {!mobileNumberValidation && (
+        <Text style={{ color: "red" }}>Please Enter Your Mobile Number</Text>
+      )}
     </View>
   );
 };
